@@ -1,4 +1,4 @@
-This is a revised module created to perform operations on cassandra.This is should be used after the installation of cassandra.Here is the link for the installation of cassandra(http://cassandra.apache.org/download/).The prerequisits for the installation of cassandra are latest version of Java8 and in order to use cqlsh(cassandra quer language shell), python of version 2.7 is used.In order to use this module,the modules that are to be pre installed is:
+This is a revised module created to perform operations on cassandra.This is should be used after the installation of cassandra.Here is the link for the installation of cassandra(http://cassandra.apache.org/download/ ).The prerequisits for the installation of cassandra are latest version of Java8 and in order to use cqlsh(cassandra quer language shell), python of version 2.7 is used.In order to use this module,the modules that are to be pre installed is:
 1.Cassandra-driver
 Installation of cassandra driver:
 Installation through pip
