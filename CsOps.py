@@ -140,7 +140,7 @@ class CsOps:
       if column in list1:
         return "Index cannot be created!!"
       else:
-        self.s.execute("create index on "+table_name+" ("+column+")")
+        self.s.execute("create index if not exists on "+table_name+" ("+column+")")
         return "Index created!!"
     except Exception as e:
       return str(e)
@@ -154,7 +154,7 @@ class CsOps:
   def dropIndex(self,table_name,column):
     try:
       index=table_name+"_"+column+"_"+"idx"
-      self.execute("drop index "+index)
+      self.s.execute("drop index "+index)
       return "Index dropped!!"
     except Exception as e:
       return str(e)
