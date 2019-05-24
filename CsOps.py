@@ -144,7 +144,7 @@ class CsOps:
         if q_c>1:
           return "Index already exists!!"
         else:
-          self.s.execute("create index if not exists on "+table_name+" ("+column+")")
+          self.s.execute("create index on "+table_name+" ("+column+")")
           return "Index created!!"
     except Exception as e:
       return str(e)
