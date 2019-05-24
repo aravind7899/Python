@@ -137,11 +137,15 @@ class CsOps:
   def createIndex(self,table_name,column):
     try:
       list1=[str(j[0]) for j in list(self.s.execute("select column_name from system_schema.columns where keyspace_name='"+self.ks+"' and table_name='"+table_name+"' and kind='partition_key' ALLOW FILTERING"))]
+      q_c=self.s.execute("select count(*) from system_schema.indexes where keyspace_name='"+self.ks+"' and table_name='"+table_name+"' and options={'target':'"+column+"'} ALLOW FILTERING")[0][0]
       if column in list1:
         return "Index cannot be created!!"
       else:
-        self.s.execute("create index if not exists on "+table_name+" ("+column+")")
-        return "Index created!!"
+        if q_c>1:
+          return "Index already exists!!"
+        else:
+          self.s.execute("create index if not exists on "+table_name+" ("+column+")")
+          return "Index created!!"
     except Exception as e:
       return str(e)
   @createIndex.overload
@@ -154,8 +158,12 @@ class CsOps:
   def dropIndex(self,table_name,column):
     try:
       index=table_name+"_"+column+"_"+"idx"
-      self.s.execute("drop index "+index)
-      return "Index dropped!!"
+      q_c=self.s.execute("select count(*) from system_schema.indexes where keyspace_name='"+self.ks+"' and table_name='"+table_name+"' and options={'target':'"+column+"'} ALLOW FILTERING")[0][0]
+      if q_c==1:
+        self.s.execute("drop index "+index)
+        return "Index dropped!!"
+      else:
+        return "Index does not exists!!"
     except Exception as e:
       return str(e)
   @dropIndex.overload
