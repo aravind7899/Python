@@ -204,6 +204,50 @@ class CsOps:
   def createTable(self,keyspace,table_name,column_dt,partition_key,clustering_keys):
     self.useKeyspace(keyspace)
     return self.createTable(table_name,column_dt,partition_key,clustering_keys)
+  @createTable.overload
+  @signature("dict")
+  def createTable(self,details):
+    try:
+      query="create table "+details["table_name"]+" ("
+      c_dt=details["columns"]
+      for key,value in c_dt.iteritems():
+        query+=key+" "+value+","
+      partition_key=details["primary_key"]["partition_key"]
+      clustering_keys=details["primary_key"]["clustering_keys"]
+      pk=len(partition_key)
+      ck=len(clustering_keys)
+      if pk==1:
+        if ck>0:
+          query+="PRIMARY KEY ("+partition_key[0]+","
+          for i in xrange(ck-1):
+            query+=clustering_keys[i]+","
+          query+=clustering_keys[-1]+"))"
+          self.s.execute(query)
+        else:
+          query+="PRIMARY KEY ("+partition_key[0]+"))"
+          self.s.execute(query)
+      else:
+        if ck>0:
+          for i in xrange(pk-1):
+            query+="PRIMARY KEY (("+partition_key[i]+","
+          query+=partition_key[-1]+"),"
+          for j in xrange(ck-1):
+            query+=clustering_keys[j]+","
+          query+=clustering_keys[-1]+"))"
+          self.s.execute(query)
+        else:
+          for i in xrange(pk-1):
+            query+="PRIMARY KEY (("+partition_key[i]+","
+          query+=partition_key[-1]+"))"
+          self.s.execute(query)
+      return "Table created!!"
+    except Exception as e:
+      return str(e)
+  @createTable.overload
+  @signature("str","dict")
+  def createTable(self,keyspace,details):
+    self.useKeyspace(keyspace)
+    return self.createTable(details)
   @Overload
   @signature("str","str","str")
   def addColumn(self,table_name,column,datatype):
