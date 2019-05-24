@@ -133,6 +133,37 @@ class CsOps:
     except Exception as e:
       return list(e)
   @Overload
+  @signature("str","str")
+  def createIndex(self,table_name,column):
+    try:
+      list1=[str(j[0]) for j in list(self.s.execute("select column_name from system_schema.columns where keyspace_name='"+self.ks+"' and table_name='"+table_name+"' and kind='partition_key' ALLOW FILTERING"))]
+      if column in list1:
+        return "Index cannot be created!!"
+      else:
+        self.s.execute("create index on "+table_name+" ("+column+")")
+        return "Index created!!"
+    except Exception as e:
+      return str(e)
+  @createIndex.overload
+  @signature("str","str","str")
+  def createIndex(self,keyspace,table_name,column):
+    self.useKeyspace(keyspace)
+    return self.createIndex(table_name,column)
+  @Overload
+  @signature("str","str")
+  def dropIndex(self,table_name,column):
+    try:
+      index=table_name+"_"+column+"_"+"idx"
+      self.execute("drop index "+index)
+      return "Index dropped!!"
+    except Exception as e:
+      return str(e)
+  @dropIndex.overload
+  @signature("str","str","str")
+  def dropIndex(self,keyspace,table_name,column):
+    self.useKeypspace(keyspace)
+    return self.dropIndex(table_name,column)
+  @Overload
   @signature("str","dict","list","list")
   def createTable(self,table_name,column_dt,partition_key,clustering_keys):
     try:
