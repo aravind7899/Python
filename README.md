@@ -4,7 +4,7 @@ Installation of cassandra driver:
 Installation through pip
 pip is the suggested tool for installing packages. It will handle installing all Python dependencies for the driver at the same time as the driver itself. To install the driver*:
 
-pip install cassandra-driver
+pip install cassandra-driver,pythonlangutil
 
 You can use pip install --pre cassandra-driver if you need to install a beta version.
 
